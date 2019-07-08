@@ -1,0 +1,7 @@
+.idea/
+Dataset/
+Dataset/artist_data.txt
+Dataset/user_artist_data.txt
+Dataset/artist_alias.txt
+*.iml
+.idea
