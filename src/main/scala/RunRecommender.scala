@@ -18,7 +18,7 @@ object RunRecommender {
     val spark = SparkSession.builder.appName("Recomendador").master("local").getOrCreate
     // Optional, but may help avoid errors due to long lineage
 
-    val base = "file:///home/jdmarquez/Dataset/"
+    val base = "file:///Users/ablaz/Documents/Recommender/Dataset/"
     val rawUserArtistData = spark.read.textFile(base + "user_artist_data.txt")
     val rawArtistData = spark.read.textFile(base + "artist_data.txt")
     val rawArtistAlias = spark.read.textFile(base + "artist_alias.txt")
@@ -26,7 +26,7 @@ object RunRecommender {
     val runRecommender = new RunRecommender(spark)
     runRecommender.preparation(rawUserArtistData, rawArtistData, rawArtistAlias)
     runRecommender.model(rawUserArtistData, rawArtistData, rawArtistAlias)
-    runRecommender.evaluate(rawUserArtistData, rawArtistAlias)
+    // runRecommender.evaluate(rawUserArtistData, rawArtistAlias)
     runRecommender.recommend(rawUserArtistData, rawArtistData, rawArtistAlias)
   }
 
@@ -36,6 +36,15 @@ class RunRecommender(private val spark: SparkSession) {
 
   import spark.implicits._
 
+  /**
+    * This method turn the raw datasets in dataframes with specific formats to
+    * explore each.
+    *
+    *
+    * @param rawUserArtistData
+    * @param rawArtistData
+    * @param rawArtistAlias
+    */
   def preparation(
                    rawUserArtistData: Dataset[String],
                    rawArtistData: Dataset[String],
