@@ -18,7 +18,7 @@ object RunRecommender {
     val spark = SparkSession.builder.appName("Recomendador").master("local").getOrCreate
     // Optional, but may help avoid errors due to long lineage
 
-    val base = "file:///Users/ablaz/Documents/Recommender/Dataset/"
+    val base = "file:////home/ubuntu/Documents/Recommender/Dataset/"
     val rawUserArtistData = spark.read.textFile(base + "user_artist_data.txt")
     val rawArtistData = spark.read.textFile(base + "artist_data.txt")
     val rawArtistAlias = spark.read.textFile(base + "artist_alias.txt")
@@ -108,6 +108,24 @@ class RunRecommender(private val spark: SparkSession) {
     val recommendedArtistIDs = topRecommendations.select("artist").as[Int].collect()
 
     artistByID.filter($"id" isin (recommendedArtistIDs:_*)).show()
+
+    val userID2 = 2005418
+
+    val existingArtistIDs2 = trainData.
+      filter($"user" === userID2).
+      select("artist").as[Int].collect()
+
+    // val artistByID = buildArtistByID(rawArtistData)
+
+    artistByID.filter($"id" isin (existingArtistIDs2:_*)).show()
+
+    val topRecommendations2 = makeRecommendations(model, userID2, 5)
+    topRecommendations2.show()
+
+    val recommendedArtistIDs2 = topRecommendations.select("artist").as[Int].collect()
+
+    artistByID.filter($"id" isin (recommendedArtistIDs2:_*)).show()
+
 
     model.userFactors.unpersist()
     model.itemFactors.unpersist()
